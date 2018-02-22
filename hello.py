@@ -30,7 +30,7 @@ def get_details():
         "displayText": "displayText",
         "source": "mySource",
         "data": {},
-        "contextOut": "contextOut",
+        "contextOut": [],
         "source": "mysource"
     } , indent=4), content_type='application/json')
  
