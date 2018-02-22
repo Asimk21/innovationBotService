@@ -1,10 +1,35 @@
+import numpy as np
+import cPickle as pickle
+import gym
+import tensorflow as tf
+from tensorflow.python import debug as tf_debug
+import os
+import io
+import collections
+import re, string
+from gensim.models import Word2Vec
+import sys
+
+
 from flask import Flask
 import os
 from flask import make_response
 import json
 from flask import request
+
+
 app = Flask(__name__)
+log_dir = './support'
  
+
+def data_preprocessor(request_str):
+    request_str = request_str.strip()
+    request_str = request_str.lower()
+    request_str = request_str.split(" ")
+    return request_str
+
+
+
 @app.route("/")
 def hello():
     return "Hello World!"
@@ -16,14 +41,36 @@ def get_details():
     print("Request:")
     print(json.dumps(req, indent=4))
 
-    #r = make_response({
-    #    "speech": "speech",
-    #    "displayText": "displayText",
-    #    "source": "mySource"
-    #})
-    #r = make_response({})
-    #r.headers['Content-Type'] = 'application/json'
-    #return r
+    inputs = tf.placeholder(tf.float32,shape=[None,100],name="Inputs")
+    inputs_length = tf.placeholder(tf.int32,shape=[None],name="inputs_length")
+    #targets = tf.placeholder(tf.float32,shape=[None,None,100],name="Targets")
+
+
+    with tf.name_scope('DynamicLSTMNetwork'):
+         fw_rnn_cell = tf.nn.rnn_cell.LSTMCell(100)
+         # generate prediction
+         outputs, states = tf.nn.dynamic_rnn(fw_rnn_cell,tf.expand_dims(inputs,0),sequence_length=inputs_length,dtype=tf.float32)
+     
+    with tf.Session() as sess:
+      
+        word_model = Word2Vec.load(log_dir+'/model.bin')
+        words_embedding = list(word_model.wv.vocab)
+
+        sentence = data_preprocessor("what is ringo")
+        saver = tf.train.Saver()
+        saver.restore(sess,log_dir+'/answerer.ckpt')
+                
+        #convert words to their corressponding embeddings
+        
+        line_with_word_embeddings = [word_model.wv[word] for word in sentence]
+        response = ""
+        for i in range(0,30):
+
+            result = sess.run(outputs,feed_dict={inputs:line_with_word_embeddings,inputs_length:[len(sentence)]})
+            answer =  word_model.wv.similar_by_vector(result[0][2])[0][0]
+            line_with_word_embeddings.append(word_model.wv[answer])
+            line_with_word_embeddings = line_with_word_embeddings[1:]
+            response = response +" "+ answer
 
     return app.response_class(json.dumps({
         "speech": "speech12312312312",
@@ -31,7 +78,7 @@ def get_details():
         "source": "mySource",
         "data": {"slack": 
                    {
-                    "text": "data speech"
+                    "text": response
                    }
                 },
         "contextOut": [],

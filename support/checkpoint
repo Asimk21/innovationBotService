@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/bardek01/innovation/tensorflow/runs/answerer/v1.2/answerer.ckpt"
+all_model_checkpoint_paths: "/Users/bardek01/innovation/tensorflow/runs/answerer/v1.2/answerer.ckpt"
