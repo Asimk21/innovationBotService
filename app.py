@@ -1,10 +1,13 @@
-from chalice import Chalice, Response
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+import urllib
+import json
+import os
 
-app = Chalice(app_name='InnovationBot')
+from flask import Flask
+from flask import request
+from flask import make_response
 
+# Flask app should start in global layout
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -33,3 +36,10 @@ def create_user():
     #return {'hello': 'world'}
 # See the README documentation for more examples.
 #
+
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5000))
+
+    print "Starting app on port %d" % port
+
+app.run(debug=True, port=port, host='0.0.0.0')
