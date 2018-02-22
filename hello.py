@@ -29,7 +29,7 @@ def get_details():
         "speech": "speech12312312312",
         "displayText": "displayText",
         "source": "mySource",
-        "data": {"slack": {"my slack message"} },
+        "data": {},
         "contextOut": [],
         "source": "mysource"
     } , indent=4), content_type='application/json')
