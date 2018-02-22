@@ -1,6 +1,6 @@
 from flask import Flask
 import os
-
+from flask import make_response
 import json
 from flask import request
 app = Flask(__name__)
@@ -15,7 +15,24 @@ def get_details():
 
     print("Request:")
     print(json.dumps(req, indent=4))
-    return app.response_class(json.dumps(req, indent=4), content_type='application/json')
+
+    #r = make_response({
+    #    "speech": "speech",
+    #    "displayText": "displayText",
+    #    "source": "mySource"
+    #})
+    #r = make_response({})
+    #r.headers['Content-Type'] = 'application/json'
+    #return r
+
+    return app.response_class(json.dumps({
+        "speech": "speech",
+        "displayText": "displayText",
+        "source": "mySource",
+        "data": {},
+        "contextOut": "contextOut",
+        "source": "mysource"
+    } , indent=4), content_type='application/json')
  
 if __name__ == "__main__":
     #app.run()
