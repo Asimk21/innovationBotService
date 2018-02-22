@@ -26,10 +26,10 @@ def get_details():
     #return r
 
     return app.response_class(json.dumps({
-        "speech": "speech",
+        "speech": "speech12312312312",
         "displayText": "displayText",
         "source": "mySource",
-        "data": {},
+        "data": {"slack": {"my slack message"} },
         "contextOut": [],
         "source": "mysource"
     } , indent=4), content_type='application/json')
