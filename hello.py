@@ -84,8 +84,8 @@ def get_details():
         #print(req["data"])
         #print(req["data"]["text"])
        
-        #sentence = data_preprocessor(req["data"]["text"]) 
-        sentence = data_preprocessor(req["data"]["text"]) 
+        #sentence = data_preprocessor(req["originalRequest"]["data"]["text"]) 
+        sentence = data_preprocessor(req["originalRequest"]["data"]["text"]) 
         
         print(sentence)        
         #convert words to their corressponding embeddings
